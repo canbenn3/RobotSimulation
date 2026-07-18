@@ -3,6 +3,7 @@ package ui
 import javafx.geometry.Insets
 import javafx.scene.control.Label
 import javafx.scene.layout.VBox
+import javafx.scene.paint.Color
 import model.Robot
 
 /**
@@ -13,12 +14,12 @@ import model.Robot
  */
 class TelemetryPanel : VBox(6.0) {
 
-    private val title = styledLabel("Telemetry", 15.0, bold = true)
-    private val sonar = valueLabel()
-    private val temperature = valueLabel()  
-    private val vision = valueLabel()
-    private val line = valueLabel()
-    private val collision = valueLabel()
+    private val title = StyledLabel("Telemetry", 15.0, bold = true)
+    private val sonar = LabelObserver<Double>()
+    private val temperature = LabelObserver<Double>()
+    private val vision = LabelObserver<Color>()
+    private val line = LabelObserver<Boolean>()
+    private val collision = LabelObserver<Boolean>()
 
     init {
         padding = Insets(12.0)
@@ -47,17 +48,15 @@ class TelemetryPanel : VBox(6.0) {
      * AbstractSubject.)
      */
     fun bindTo(robot: Robot) {
-        // TODO(student): subscribe observers to robot's sensors (see the doc comment above).
+        robot.sonar.subscribe(sonar)
+        robot.vision.subscribe(vision)
+        robot.temperature.subscribe(temperature)
+        robot.collision.subscribe(collision)
+        robot.lineLeft.subscribe(line)
+        robot.lineCenter.subscribe(line)
+        robot.lineRight.subscribe(line)
     }
 
     private fun captioned(caption: String, value: Label): VBox =
-        VBox(2.0, styledLabel(caption, 11.0, color = "#8b949e"), value)
-
-    private fun valueLabel() = styledLabel("—", 18.0, bold = true)
-
-    private fun styledLabel(text: String, size: Double, bold: Boolean = false, color: String = "#e6edf3"): Label =
-        Label(text).apply {
-            style = "-fx-font-size: ${size}px; -fx-text-fill: $color;" +
-                if (bold) " -fx-font-weight: bold;" else ""
-        }
+        VBox(2.0, StyledLabel(caption, 11.0, color = "#8b949e"), value)
 }

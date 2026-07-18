@@ -488,9 +488,9 @@ src/test/kotlin/
 ## 10. Student deliverables — TODO checklist
 
 **Observer pattern**
-- [ ] Implement `AbstractSubject<T>`: `subscribe`, `unsubscribe`, `notifyObservers`.
-- [ ] Implement `LabelObserver` (and any other concrete observers).
-- [ ] In `TelemetryPanel`, subscribe observers to each sensor so the labels update live.
+- [X] Implement `AbstractSubject<T>`: `subscribe`, `unsubscribe`, `notifyObservers`.
+- [X] Implement `LabelObserver` (and any other concrete observers).
+- [X] In `TelemetryPanel`, subscribe observers to each sensor so the labels update live.
 
 **Command pattern**
 - [ ] **Design your own set of `Command` classes** — you decide which actions the robot
