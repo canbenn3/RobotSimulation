@@ -493,11 +493,11 @@ src/test/kotlin/
 - [X] In `TelemetryPanel`, subscribe observers to each sensor so the labels update live.
 
 **Command pattern**
-- [ ] **Design your own set of `Command` classes** — you decide which actions the robot
+- [X] **Design your own set of `Command` classes** — you decide which actions the robot
       supports and how they map to the robot's actuators. `execute()` performs the action;
       `undo()` reverses it. (The starter deliberately does not give you a command list.)
-- [ ] Implement `CommandInvoker.run/undo/redo` with the history stacks.
-- [ ] In `ControlPanel`, wire each button (and key binding) to build one of *your* commands
+- [X] Implement `CommandInvoker.run/undo/redo` with the history stacks.
+- [X] In `ControlPanel`, wire each button (and key binding) to build one of *your* commands
       and submit it via `RobotApi.perform(...)`; wire Undo/Redo to the API.
 
 **Programming the robot via the application interface**
