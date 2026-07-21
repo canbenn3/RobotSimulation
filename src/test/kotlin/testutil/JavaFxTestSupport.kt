@@ -1,6 +1,7 @@
 package testutil
 
 import javafx.application.Platform
+import javafx.scene.control.ListCell
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
@@ -22,5 +23,21 @@ object JavaFxTestSupport {
             }
             started = true
         }
+    }
+
+    /** Invokes protected [ListCell.updateItem] so cell rendering branches can be covered. */
+    fun <T> updateListCell(cell: ListCell<T>, item: T?, empty: Boolean) {
+        var type: Class<*>? = cell.javaClass
+        var method: java.lang.reflect.Method? = null
+        while (type != null && method == null) {
+            method =
+                    type.declaredMethods.firstOrNull {
+                        it.name == "updateItem" && it.parameterCount == 2
+                    }
+            type = type.superclass
+        }
+        checkNotNull(method) { "updateItem not found on ${cell.javaClass}" }
+        method.isAccessible = true
+        method.invoke(cell, item, empty)
     }
 }

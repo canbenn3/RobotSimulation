@@ -122,12 +122,52 @@ class ControlPanelTest {
     fun `environment combo notifies on selection change`() {
         val selected = mutableListOf<String>()
         val (_, _, panel) = fixture(onSelect = { selected += it.name })
-        val envBox = panel.children[0] as HBox
-        @Suppress("UNCHECKED_CAST")
-        val combo = envBox.children.filterIsInstance<ComboBox<*>>().single() as ComboBox<environment.Environment>
+        val combo = environmentCombo(panel)
 
         combo.value = combo.items[1]
 
         assertTrue(selected.contains("Beta"), "selected=$selected")
+    }
+
+    @Test
+    fun `environment combo ignores null selections`() {
+        var calls = 0
+        val (_, _, panel) = fixture(onSelect = { calls++ })
+        val combo = environmentCombo(panel)
+
+        // selectFirst already chose Alpha; clearing must not call onSelect
+        val before = calls
+        combo.value = null
+        assertEquals(before, calls)
+    }
+
+    @Test
+    fun `environment list cells render empty null and named items`() {
+        val (_, _, panel) = fixture()
+        val combo = environmentCombo(panel)
+        val cell = combo.buttonCell
+        val env = combo.items.first()
+
+        JavaFxTestSupport.updateListCell(cell, null, empty = true)
+        assertEquals(null, cell.text)
+
+        JavaFxTestSupport.updateListCell(cell, null, empty = false)
+        assertEquals(null, cell.text)
+
+        JavaFxTestSupport.updateListCell(cell, env, empty = false)
+        assertEquals(env.name, cell.text)
+
+        // cellFactory path creates a fresh cell with the same branches
+        val factoryCell = combo.cellFactory.call(null)
+        JavaFxTestSupport.updateListCell(factoryCell, env, empty = false)
+        assertEquals(env.name, factoryCell.text)
+        JavaFxTestSupport.updateListCell(factoryCell, null, empty = true)
+        assertEquals(null, factoryCell.text)
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun environmentCombo(panel: ControlPanel): ComboBox<environment.Environment> {
+        val envBox = panel.children[0] as HBox
+        return envBox.children.filterIsInstance<ComboBox<*>>().single() as ComboBox<environment.Environment>
     }
 }

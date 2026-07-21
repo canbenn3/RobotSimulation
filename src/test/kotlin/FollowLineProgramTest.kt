@@ -93,6 +93,35 @@ class FollowLineProgramTest {
     }
 
     @Test
+    fun `stopProgram without start still stops the robot safely`() {
+        val (robot, api, program) = fixture()
+        robot.setTrackVelocities(50.0, 50.0)
+
+        // leftObserver is null — exercises the safe-call miss branch
+        program.stopProgram(api)
+
+        assertEquals(0.0, robot.leftTrackVelocity)
+        assertEquals(0.0, robot.rightTrackVelocity)
+    }
+
+    @Test
+    fun `observer ignores updates when the program has no robot`() {
+        val (robot, api, program) = fixture()
+        program.startProgram(api)
+        robot.lineLeft.notifyObservers(true)
+        assertEquals(90.0, robot.leftTrackVelocity)
+
+        // Clear the stored api while leaving the subscription active
+        val robotField = FollowLineProgram::class.java.getDeclaredField("robot")
+        robotField.isAccessible = true
+        robotField.set(program, null)
+
+        robot.lineLeft.notifyObservers(false)
+        assertEquals(90.0, robot.leftTrackVelocity)
+        assertEquals(20.0, robot.rightTrackVelocity)
+    }
+
+    @Test
     fun `StudentPrograms registers the follow-line program`() {
         val registry = DefaultProgramRegistry()
         StudentPrograms.registerAll(registry)
