@@ -501,13 +501,13 @@ src/test/kotlin/
       and submit it via `RobotApi.perform(...)`; wire Undo/Redo to the API.
 
 **Programming the robot via the application interface**
-- [ ] Implement a `RobotProgram`: in `startProgram(robot)` **subscribe to the sensors you
+- [X] Implement a `RobotProgram`: in `startProgram(robot)` **subscribe to the sensors you
       need** (`robot.sensors.…`) and, in each observer callback, `robot.perform(...)` your
       commands; in `stopProgram(robot)` unsubscribe and stop the robot. This is where
       Observer (your sensor subscriptions) and Command (your actions) come together —
       pursue an objective such as following the line, ascending the temperature gradient,
       or finding & touching the red ball.
-- [ ] **Register your program** in `StudentPrograms.registerAll(...)` via
+- [X] *Register your program** in `StudentPrograms.registerAll(...)` via
       `registry.register(...)` so it appears in the "Program" dropdown and can be launched
       with **Run Program**.
 
