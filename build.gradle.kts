@@ -2,6 +2,7 @@ plugins {
     kotlin("jvm") version "2.3.20"
     application
     id("org.openjfx.javafxplugin") version "0.1.0"
+    jacoco
 }
 
 group = "org.example"
@@ -32,4 +33,13 @@ application {
 
 tasks.test {
     useJUnitPlatform()
+    finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+    reports {
+        html.required.set(true)
+        xml.required.set(true)
+    }
 }
