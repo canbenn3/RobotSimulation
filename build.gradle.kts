@@ -36,10 +36,42 @@ tasks.test {
     finalizedBy(tasks.jacocoTestReport)
 }
 
+/** Coverage scoped to student-authored pattern / program / panel code. */
+val studentCoverageClasses =
+        sourceSets.main.get().output.asFileTree.matching {
+            include(
+                    "observer/**",
+                    "command/**",
+                    "api/FollowLineProgram*",
+                    "api/StudentPrograms*",
+                    "ui/LabelObserver*",
+                    "ui/TelemetryPanel*",
+                    "ui/ControlPanel*",
+            )
+        }
+
 tasks.jacocoTestReport {
     dependsOn(tasks.test)
+    classDirectories.setFrom(studentCoverageClasses)
     reports {
         html.required.set(true)
         xml.required.set(true)
     }
 }
+
+tasks.jacocoTestCoverageVerification {
+    dependsOn(tasks.test)
+    classDirectories.setFrom(studentCoverageClasses)
+    violationRules {
+        rule {
+            limit {
+                counter = "INSTRUCTION"
+                value = "COVEREDRATIO"
+                minimum = "0.80".toBigDecimal()
+            }
+        }
+    }
+}
+
+tasks.check { dependsOn(tasks.jacocoTestCoverageVerification) }
+
