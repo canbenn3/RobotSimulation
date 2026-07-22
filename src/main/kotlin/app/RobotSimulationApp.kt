@@ -4,6 +4,10 @@ import api.DefaultProgramRegistry
 import api.DefaultRobotApi
 import api.StudentPrograms
 import command.CommandInvoker
+import command.ForwardCommand
+import command.LeftTurnCommand
+import command.ReverseCommand
+import command.RightTurnCommand
 import command.SetVelocityCommand
 import javafx.animation.AnimationTimer
 import javafx.application.Application
@@ -98,32 +102,28 @@ class RobotSimulationApp : Application() {
         scene.addEventFilter(KeyEvent.KEY_PRESSED) { e ->
             when (e.code) {
                 KeyCode.UP -> {
-                    drive(speed, speed)
+                    api.perform(ForwardCommand(api.actuator, speed))
                     e.consume()
                 }
                 KeyCode.DOWN -> {
-                    drive(-speed, -speed)
+                    api.perform(ReverseCommand(api.actuator, speed))
                     e.consume()
                 }
                 KeyCode.LEFT -> {
-                    drive(turn, -turn)
+                    api.perform(LeftTurnCommand(api.actuator, turn))
                     e.consume()
                 }
                 KeyCode.RIGHT -> {
-                    drive(-turn, turn)
+                    api.perform(RightTurnCommand(api.actuator, turn))
                     e.consume()
                 }
                 KeyCode.SPACE -> {
-                    drive(0.0, 0.0)
+                    api.perform(SetVelocityCommand(api.actuator, 0.0, 0.0))
                     e.consume()
                 }
                 else -> {}
             }
         }
-    }
-
-    private fun drive(left: Double, right: Double) {
-        api.perform(SetVelocityCommand(api.actuator, left, right))
     }
 
     private fun switchEnvironment(envClass: Class<*>) {

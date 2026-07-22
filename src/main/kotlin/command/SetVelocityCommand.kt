@@ -1,6 +1,6 @@
 package command
 
-class SetVelocityCommand(
+open class SetVelocityCommand(
         private val actuator: RobotActuator,
         private val leftDrive: Double,
         private val rightDrive: Double

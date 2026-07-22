@@ -126,7 +126,8 @@ class FollowLineProgramTest {
         val registry = DefaultProgramRegistry()
         StudentPrograms.registerAll(registry)
 
-        assertEquals(1, registry.programs().size)
-        assertEquals("Left-Hand Line Maze", registry.programs().single().name)
+        val names = registry.programs().map { it.name }
+        assertTrue(names.contains("Left-Hand Line Maze"))
+        assertTrue(names.contains("Find Hottest Temperature"))
     }
 }

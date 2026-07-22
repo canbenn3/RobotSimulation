@@ -1,6 +1,10 @@
 package ui
 
 import api.RobotApi
+import command.ForwardCommand
+import command.LeftTurnCommand
+import command.ReverseCommand
+import command.RightTurnCommand
 import command.SetVelocityCommand
 import environment.Environment
 import javafx.geometry.Insets
@@ -12,11 +16,8 @@ import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
 
 /**
- * Manual controller. Each drive button should build one of YOUR command classes and submit it
- * through the [RobotApi] — so manual driving shares the same undoable action path as a program.
- *
- * The layout, the environment selector, and Undo / Redo / Reset are provided. Wiring the five drive
- * buttons (and the keyboard, in RobotSimulationApp) to your commands is your job — see [drive].
+ * Manual controller. Each drive button builds a concrete [command.Command] and submits it through
+ * the [RobotApi] — so manual driving shares the same undoable action path as a program.
  */
 class ControlPanel(
         private val api: RobotApi,
@@ -53,11 +54,13 @@ class ControlPanel(
                 HBox(8.0).apply {
                     alignment = Pos.CENTER_LEFT
                     children.addAll(
-                            button("◄ Left") { drive(turn, -turn) },
-                            button("▲ Forward") { drive(speed, speed) },
-                            button("▼ Back") { drive(-speed, -speed) },
-                            button("► Right") { drive(-turn, turn) },
-                            button("■ Stop") { drive(0.0, 0.0) },
+                            button("◄ Left") { api.perform(LeftTurnCommand(api.actuator, turn)) },
+                            button("▲ Forward") { api.perform(ForwardCommand(api.actuator, speed)) },
+                            button("▼ Back") { api.perform(ReverseCommand(api.actuator, speed)) },
+                            button("► Right") { api.perform(RightTurnCommand(api.actuator, turn)) },
+                            button("■ Stop") {
+                                api.perform(SetVelocityCommand(api.actuator, 0.0, 0.0))
+                            },
                             spacer(),
                             button("Undo") { api.undo() },
                             button("Redo") { api.redo() },
@@ -66,10 +69,6 @@ class ControlPanel(
                 }
 
         children.addAll(envBox, driveBox)
-    }
-
-    private fun drive(left: Double, right: Double) {
-        api.perform(SetVelocityCommand(api.actuator, left, right))
     }
 
     private fun button(text: String, action: () -> Unit) =
