@@ -129,5 +129,6 @@ class FollowLineProgramTest {
         val names = registry.programs().map { it.name }
         assertTrue(names.contains("Left-Hand Line Maze"))
         assertTrue(names.contains("Find Hottest Temperature"))
+        assertTrue(names.contains("Solve Obstacles — find the ball"))
     }
 }

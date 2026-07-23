@@ -10,5 +10,6 @@ object StudentPrograms {
     fun registerAll(registry: ProgramRegistry) {
         registry.register(FollowLineProgram())
         registry.register(FindHottestTempProgram())
+        registry.register(SolveObstaclesProgram())
     }
 }
